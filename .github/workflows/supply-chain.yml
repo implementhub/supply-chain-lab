@@ -131,7 +131,7 @@ jobs:
       - name: Attach SLSA provenance attestation
         run: |
           cosign attest --yes \
-            --type slsaprovenance \
+            --type slsaprovenance1 \
             --predicate attestations/provenance.json \
             $IMAGE
 
