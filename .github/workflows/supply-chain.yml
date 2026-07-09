@@ -176,7 +176,7 @@ jobs:
       - name: Verify provenance attestation
         run: |
           cosign verify-attestation \
-            --type slsaprovenance \
+            --type slsaprovenance1 \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
             $IMAGE
