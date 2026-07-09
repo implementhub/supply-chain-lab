@@ -121,9 +121,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Build supply-chain-tools image
-        run: task build-tools
-
       - name: Set image reference
         run: |
           echo "IMAGE=ghcr.io/${{ github.repository_owner }}/supply-chain-app@${{ needs.build-attestations.outputs.image-digest }}" >> $GITHUB_ENV
