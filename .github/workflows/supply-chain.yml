@@ -149,7 +149,7 @@ jobs:
           cosign attest --yes --type vuln --predicate attestations/vuln-image.json $IMAGE
 
       - name: Debug - list all attached artifacts
-        run: cosign tree $IMAGE
+        run: cosign tree --experimental-oci11 $IMAGE
 
   verify:
     name: Verify Signatures and Attestations
@@ -171,7 +171,7 @@ jobs:
 
       - name: Verify image signature
         run: |
-          cosign verify \
+          cosign verify --experimental-oci11 \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
             $IMAGE > /dev/null
@@ -179,7 +179,7 @@ jobs:
 
       - name: Verify provenance attestation
         run: |
-          cosign verify-attestation \
+          cosign verify-attestation --experimental-oci11 \
             --type slsaprovenance1 \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
@@ -188,7 +188,7 @@ jobs:
 
       - name: Verify SBOM attestation
         run: |
-          cosign verify-attestation \
+          cosign verify-attestation --experimental-oci11 \
             --type spdxjson \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
@@ -197,12 +197,16 @@ jobs:
 
       - name: Verify vulnerability attestations
         run: |
-          cosign verify-attestation \
+          cosign verify-attestation --experimental-oci11\
             --type vuln \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
             $IMAGE > /dev/null
           echo "Vulnerability attestations verified"
+      - name: Debug - full rekor search
+        run: |
+          DIGEST_HASH=$(echo "${{ needs.build-attestations.outputs.image-digest }}" | cut -d: -f2)
+          rekor-cli search --sha $DIGEST_HASH
 
       - name: Check Rekor entries
         run: |
