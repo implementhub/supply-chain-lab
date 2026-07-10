@@ -109,7 +109,7 @@ jobs:
         uses: sigstore/cosign-installer@v4
 
       - name: Download attestations
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.0
         with:
           name: attestations
           path: attestations/
@@ -157,7 +157,7 @@ jobs:
     needs: [build-attestations, sign-and-attest]
     steps:
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v4
+        uses: sigstore/cosign-installer@v4.1.0
 
       - name: Install rekor-cli
         run: |
