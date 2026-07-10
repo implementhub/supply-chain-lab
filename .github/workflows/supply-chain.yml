@@ -148,6 +148,9 @@ jobs:
           cosign attest --yes --type vuln --predicate attestations/vuln-iac.json $IMAGE
           cosign attest --yes --type vuln --predicate attestations/vuln-image.json $IMAGE
 
+      - name: Debug - list all attached artifacts
+        run: cosign tree $IMAGE
+
   verify:
     name: Verify Signatures and Attestations
     runs-on: ubuntu-latest
@@ -171,7 +174,8 @@ jobs:
           cosign verify \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-            $IMAGE
+            $IMAGE > /dev/null
+          echo "Image attestation verified"
 
       - name: Verify provenance attestation
         run: |
@@ -179,7 +183,8 @@ jobs:
             --type slsaprovenance1 \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-            $IMAGE
+            $IMAGE > /dev/null
+          echo "Provenance attestation verified"
 
       - name: Verify SBOM attestation
         run: |
@@ -187,7 +192,8 @@ jobs:
             --type spdxjson \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-            $IMAGE
+            $IMAGE > /dev/null
+          echo "SBOM attestation verified"
 
       - name: Verify vulnerability attestations
         run: |
@@ -195,7 +201,8 @@ jobs:
             --type vuln \
             --certificate-identity-regexp="https://github.com/${{ github.repository }}/.*" \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-            $IMAGE
+            $IMAGE > /dev/null
+          echo "Vulnerability attestations verified"
 
       - name: Check Rekor entries
         run: |
